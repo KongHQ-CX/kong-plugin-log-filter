@@ -8,6 +8,8 @@ function plugin:access(plugin_conf)
 
   if plugin_conf.inspect then
     kong.log.inspect.on()
+  else
+    kong.log.inspect.off()
   end
 
   if plugin_conf.request_body or plugin_conf.response_body then
@@ -32,6 +34,8 @@ function plugin:log(plugin_conf)
 
   if plugin_conf.inspect then
     kong.log.inspect.on()
+  else
+    kong.log.inspect.off()
   end
 
   -- Adds a new value to the serialized table
