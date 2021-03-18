@@ -12,12 +12,6 @@ local function check_for_value(entry)
     return false, "key '" ..name.. "' has no value"
   end
 
-  local status, res, err = pcall(pl_template.compile, value)
-  if not status or err then
-    return false, "value '" .. value ..
-            "' is not in supported format, error:" ..
-	    (status and res or err)
-  end
   return true
 end
 
@@ -45,11 +39,12 @@ local schema = {
         -- The 'config' record is the custom part of the plugin schema
         type = "record",
         fields = {
-          { add_fields = { type = "array", elements = { type = "string" } } },
+          { add_fields = { type = "array", elements = { type = "string", custom_validator = check_for_value } } },
           { mask_fields = { type = "array", elements = { type = "string" } } },
           { remove_fields = { type = "array", elements = { type = "string" } } },
 	  { request_body = { type = "boolean", default = false } },
-	  { response_body = { type = "boolean", default = false } }
+	  { response_body = { type = "boolean", default = false } },
+	  { inspect = { type = "boolean", default = false } }
         },
       },
     },
