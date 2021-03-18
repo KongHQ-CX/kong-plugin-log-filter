@@ -11,4 +11,6 @@ This repository contains a plugin to allow the *-log plugins content to be custo
 | `config.request_body`        |false||Include the request body in the log message|
 | `config.response_body`        |false||Include the response body in the log message|
 
-Note, inclusing the request/response body will increase memory requirements for Kong and also force request buffering to be enabled. You can review the standard log entries that can be altered here; https://docs.konghq.com/gateway-oss/2.3.x/pdk/kong.log/#konglogserialize
+Note, including the request/response body will increase memory requirements for Kong and also force request buffering to be enabled. You can review the standard log entries that can be altered [here](https://docs.konghq.com/gateway-oss/2.3.x/pdk/kong.log/#konglogserialize)
+
+This plugin will alter the data for any plugin that uses the [log.serialize](https://docs.konghq.com/gateway-oss/2.3.x/pdk/kong.log/#konglogserialize) function. It does not provide logging to an endpoint and is purely used to change the content that will be sent via one of the standard logging plugins.
