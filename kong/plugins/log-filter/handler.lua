@@ -16,7 +16,7 @@ local plugin = {
   VERSION = "0.1",
 }
 
-function plugin:rewrite(plugin_conf)
+function plugin:access(plugin_conf)
 
   if plugin_conf.request_body or plugin_conf.response_body then
   -- enable buffering for body
@@ -24,11 +24,9 @@ function plugin:rewrite(plugin_conf)
   end
 
   if plugin_conf.request_body then
-    kong.log.debug("******* Adding request body ***********")
     local body, err, mimetype = kong.request.get_body()
-    kong.log.set_serialize_value("request.body", "req. body")
-  else
-    kong.log.debug("******* NOT Adding request body ***********")
+    kong.log.set_serialize_value("request.body", body)
+    kong.log.set_serialize_value("request.mimetype", mimetype)
   end
 
 end
@@ -52,10 +50,8 @@ function plugin:log(plugin_conf)
 
   if plugin_conf.response_body then
     kong.log.debug("******* Adding response body ***********")
-    --kong.log.set_serialize_value("response.body", kong.service.response.get_body())
-    kong.log.set_serialize_value("response.body", "resp. body")
-  else
-    kong.log.debug("******* NOT Adding response body ***********")
+    local body = kong.service.response.get_body()
+    kong.log.set_serialize_value("response.body", body)
   end
 
 end
