@@ -1,7 +1,39 @@
 local typedefs = require "kong.db.schema.typedefs"
+local pl_template = require "pl.template"
 
 -- Grab pluginname from module name
 local plugin_name = ({...})[1]:match("^kong%.plugins%.([^%.]+)")
+
+
+
+local function check_for_value(entry)
+  local name, value = entry:match("^([^:]+):*(.-)$")
+  if not name or not value or value == "" then
+    return false, "key '" ..name.. "' has no value"
+  end
+
+  local status, res, err = pcall(pl_template.compile, value)
+  if not status or err then
+    return false, "value '" .. value ..
+            "' is not in supported format, error:" ..
+	    (status and res or err)
+  end
+  return true
+end
+
+
+local strings_array = {
+  type = "array",
+  default = {},
+  elements = { type = "string" },
+  }
+
+local colon_strings_array = {
+  type = "array",
+  default = {},
+  elements = { type = "string", custom_validator = check_for_value }
+  }
+
 
 local schema = {
   name = plugin_name,
@@ -13,25 +45,11 @@ local schema = {
         -- The 'config' record is the custom part of the plugin schema
         type = "record",
         fields = {
-          -- a standard defined field (typedef), with some customizations
-          { request_header = typedefs.header_name {
-              required = true,
-              default = "Hello-World" } },
-          { response_header = typedefs.header_name {
-              required = true,
-              default = "Bye-World" } },
-          { ttl = { -- self defined field
-              type = "integer",
-              default = 600,
-              required = true,
-              gt = 0, }}, -- adding a constraint for the value
-        },
-        entity_checks = {
-          -- add some validation rules across fields
-          -- the following is silly because it is always true, since they are both required
-          { at_least_one_of = { "request_header", "response_header" }, },
-          -- We specify that both header-names cannot be the same
-          { distinct = { "request_header", "response_header"} },
+          { add_fields = { type = "array", elements = { type = "string" } } },
+          { mask_fields = { type = "array", elements = { type = "string" } } },
+          { remove_fields = { type = "array", elements = { type = "string" } } },
+	  { request_body = { type = "boolean", default = false } },
+	  { response_body = { type = "boolean", default = false } }
         },
       },
     },
