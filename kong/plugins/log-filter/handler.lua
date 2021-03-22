@@ -1,3 +1,5 @@
+local json = require "cjson"
+local tostring = tostring
 
 local plugin = {
   PRIORITY = 15, -- set the plugin priority, which determines plugin execution order
@@ -19,8 +21,9 @@ function plugin:access(plugin_conf)
 
   if plugin_conf.request_body then
     local body, err, mimetype = kong.request.get_body()
-    kong.log.inspect("request body", body)
-    kong.log.set_serialize_value("request.body", body)
+    local json_body = json.encode(body)
+    kong.log.inspect("request body", json_body)
+    kong.log.set_serialize_value("request.body", json_body)
     kong.log.set_serialize_value("request.mimetype", mimetype)
   end
 
@@ -56,8 +59,14 @@ function plugin:log(plugin_conf)
 
   if plugin_conf.response_body then
     local body = kong.service.response.get_body()
-    kong.log.inspect("response body", body)
-    kong.log.set_serialize_value("response.body", body)
+    local json_body = json.encode(body)
+    kong.log.inspect("response body", json_body)
+    kong.log.set_serialize_value("response.body", json_body)
+  end
+
+  if plugin_conf.node_details then
+    kong.log.set_serialize_value("kong.node_id", kong.node.get_id())
+    kong.log.set_serialize_value("kong.hostname", tostring(kong.node.get_hostname()))
   end
 
   if plugin_conf.inspect then
