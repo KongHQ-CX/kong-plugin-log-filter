@@ -57,6 +57,7 @@ function plugin:log(plugin_conf)
     kong.log.set_serialize_value(v, "*****")
   end
 
+  -- Add response body
   if plugin_conf.response_body then
     local body = kong.service.response.get_body()
     local json_body = json.encode(body)
@@ -64,9 +65,17 @@ function plugin:log(plugin_conf)
     kong.log.set_serialize_value("response.body", json_body)
   end
 
+  -- Add Kong node details
   if plugin_conf.node_details then
     kong.log.set_serialize_value("kong.node_id", kong.node.get_id())
     kong.log.set_serialize_value("kong.hostname", tostring(kong.node.get_hostname()))
+  end
+
+  -- Add Workspace name
+  if plugin_conf.workspace_name then
+    local ws_id = ngx.ctx.workspace
+    local ws_name =  kong.db.workspaces:select({ id = ws_id })
+    kong.log.set_serialize_value("workspace_name", ws_name.name)
   end
 
   if plugin_conf.inspect then
