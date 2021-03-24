@@ -1,7 +1,7 @@
 Kong log-filter plugin
 ======================
 
-This repository contains a plugin to allow the *-log plugins content to be customised
+This repository contains a plugin to allow the *-log plugins content to be customised. This plugin requires the PDK *kong.log.set_serialize_value* function which is available from Kong 2.3
 
 | form parameter             | default             |example |  description              |
 | ---                        | ---                 | ---    | ---                       |
