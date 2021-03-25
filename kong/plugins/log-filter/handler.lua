@@ -1,4 +1,5 @@
 local json = require "cjson"
+local workspaces = require "kong.workspaces"
 local tostring = tostring
 
 local plugin = {
@@ -74,8 +75,8 @@ function plugin:log(plugin_conf)
   -- Add Workspace name
   if plugin_conf.workspace_name then
     local ws_id = ngx.ctx.workspace
-    local ws_name =  kong.db.workspaces:select({ id = ws_id })
-    kong.log.set_serialize_value("workspace_name", ws_name.name)
+    local ws_name = workspaces.get_workspace()
+    kong.log.set_serialize_value("workspace", { id = ws_id, name = ws_name.name})
   end
 
   if plugin_conf.inspect then
