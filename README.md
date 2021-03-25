@@ -10,7 +10,9 @@ This repository contains a plugin to allow the *-log plugins content to be custo
 | `config.remove_fields`     | |`latencies`|The `name` of fields to remove from in the log message|
 | `config.request_body`      |false||Include the request body in the log message|
 | `config.response_body`     |false||Include the response body in the log message|
+| `config.workspace_name`    |false||Add the workspace name to the log message|
 | `config.inspect`           |false||Add debug messages to the logs with request/response payloads|
+
 
 Note, including the request/response body will increase memory requirements for Kong and also force request buffering to be enabled. You can review the standard log entries that can be altered [here](https://docs.konghq.com/gateway-oss/2.3.x/pdk/kong.log/#konglogserialize)
 
