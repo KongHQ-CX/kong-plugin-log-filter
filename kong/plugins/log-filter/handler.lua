@@ -42,20 +42,26 @@ function plugin:log(plugin_conf)
     kong.log.inspect.off()
   end
 
-  -- Adds a new value to the serialized table
-  for k, v in pairs(plugin_conf.add_fields) do
-    local name, value = v:match("^([^:]+):*(.-)$")
-    kong.log.set_serialize_value(name, value)
+  if plugin_conf.add_fields then
+    -- Adds a new value to the serialized table
+    for k, v in pairs(plugin_conf.add_fields) do
+      local name, value = v:match("^([^:]+):*(.-)$")
+      kong.log.set_serialize_value(name, value)
+    end
   end
 
-  -- Remove configured fields from log message
-  for k, v in pairs(plugin_conf.remove_fields) do
-    kong.log.set_serialize_value(v, nil)
+  if plugin_conf.remove_fields then
+    -- Remove configured fields from log message
+    for k, v in pairs(plugin_conf.remove_fields) do
+      kong.log.set_serialize_value(v, nil)
+    end
   end
 
-  -- Mask configured fields from log message
-  for k, v in pairs(plugin_conf.mask_fields) do
-    kong.log.set_serialize_value(v, "*****")
+  if plugin_conf.mask_fields then
+    -- Mask configured fields from log message
+    for k, v in pairs(plugin_conf.mask_fields) do
+      kong.log.set_serialize_value(v, "*****")
+    end
   end
 
   -- Add response body
