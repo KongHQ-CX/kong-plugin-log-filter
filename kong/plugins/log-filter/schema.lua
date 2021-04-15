@@ -46,7 +46,8 @@ local schema = {
 	  { response_body = { type = "boolean", default = false } },
 	  { inspect = { type = "boolean", default = false } },
 	  { node_details = { type = "boolean", default = false } },
-	  { workspace_name = { type = "boolean", default = false } }
+	  { workspace_name = { type = "boolean", default = false } },
+	  { custom_fields_by_lua = typedefs.lua_code }
         },
       },
     },

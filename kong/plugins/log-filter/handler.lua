@@ -1,6 +1,9 @@
 local json = require "cjson"
 local workspaces = require "kong.workspaces"
 local tostring = tostring
+local sandbox = require "kong.tools.sandbox".sandbox
+
+local sandbox_opts = { env = { kong = kong, ngx = ngx } }
 
 local plugin = {
   PRIORITY = 15, -- set the plugin priority, which determines plugin execution order
@@ -83,6 +86,13 @@ function plugin:log(plugin_conf)
     local ws_id = ngx.ctx.workspace
     local ws_name = workspaces.get_workspace()
     kong.log.set_serialize_value("workspace", { id = ws_id, name = ws_name.name})
+  end
+
+  -- Run any custom lua
+  if plugin_conf.custom_fields_by_lua then
+    for key, expression in pairs(plugin_conf.custom_fields_by_lua) do
+      kong.log.set_serialize_value(key, sandbox(expression, sandbox_opts)())
+    end
   end
 
   if plugin_conf.inspect then
