@@ -24,11 +24,10 @@ function plugin:access(plugin_conf)
   end
 
   if plugin_conf.request_body then
-    local body, err, mimetype = kong.request.get_body()
-    local json_body = json.encode(body)
-    kong.log.inspect("request body", json_body)
-    kong.log.set_serialize_value("request.body", json_body)
-    kong.log.set_serialize_value("request.mimetype", mimetype)
+    local body = kong.request.get_raw_body()
+    kong.log.inspect("request body", body)
+    kong.log.set_serialize_value("request.body", body)
+--    kong.log.set_serialize_value("request.mimetype", mimetype)
   end
 
   if plugin_conf.inspect then
@@ -69,10 +68,9 @@ function plugin:log(plugin_conf)
 
   -- Add response body
   if plugin_conf.response_body then
-    local body = kong.service.response.get_body()
-    local json_body = json.encode(body)
-    kong.log.inspect("response body", json_body)
-    kong.log.set_serialize_value("response.body", json_body)
+    local body = kong.service.response.get_raw_body()
+    kong.log.inspect("response body", body)
+    kong.log.set_serialize_value("response.body", body)
   end
 
   -- Add Kong node details
