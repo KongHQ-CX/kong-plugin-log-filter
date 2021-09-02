@@ -40,7 +40,8 @@ curl -X POST 'https://api.kong.lan:8444/default/routes/{{route}}/plugins/' \
 		"custom_fields_by_lua": {
 			"pdk": "return kong.ip.is_trusted(kong.client.get_ip())",
 			"latencies": "return nil",
-			"abc": "return '\''abc'\''"
+			"abc": "return '\''abc'\''",
+			"request.headers.apikey": "return '******'"
 		}
 	}
 }'
