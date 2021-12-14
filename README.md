@@ -5,6 +5,8 @@ Kong log-filter plugin
 
 This repository contains a plugin to allow the *-log plugins content to be customised. This plugin requires the PDK *kong.log.set_serialize_value* function which is available from Kong 2.3 and the *custom_fields_by_lua* typedefs which are available from Kong 2.4. As such, please ensure you are on at least Kong 2.4 or this plugin will not work.
 
+The plugin can only be applied globally as it universally alters the log serializer functionality.
+
 | form parameter             | default             |example |  description              |
 | ---                        | ---                 | ---    | ---                       |
 | `config.add_fields`        | |`add:this,and:this-too`|The `name:value` pairs of fields to add to the log message|
@@ -15,7 +17,6 @@ This repository contains a plugin to allow the *-log plugins content to be custo
 | `config.workspace_name`    |false||Add the workspace name to the log message|
 | `config.inspect`           |false||Add debug messages to the logs with request/response payloads|
 | `config.custom_fields_by_lua`           | | |Add custom lua code to set a field value
-
 
 Note, including the request/response body will increase memory requirements for Kong and also force request buffering to be enabled. You can review the standard log entries that can be altered [here](https://docs.konghq.com/gateway-oss/2.3.x/pdk/kong.log/#konglogserialize)
 
