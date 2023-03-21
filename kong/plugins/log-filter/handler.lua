@@ -68,7 +68,13 @@ function plugin:log(plugin_conf)
 
   -- Add response body
   if plugin_conf.response_body then
-    local body = kong.service.response.get_raw_body()
+    -- Check for a proxy-cache body
+    local body = nil
+    if kong.ctx.shared.proxy_cache_hit and kong.ctx.shared.proxy_cache_hit.res ~= nil then
+      body = kong.ctx.shared.proxy_cache_hit.res
+    else
+      body = kong.service.response.get_raw_body()
+    end
     kong.log.inspect("response body", body)
     kong.log.set_serialize_value("response.body", body)
   end
